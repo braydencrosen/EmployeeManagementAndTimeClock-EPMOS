@@ -9,7 +9,7 @@
 // Employee management
 void loadEmployees(std::vector<employee>& employees)
 {
-	std::filesystem::path employeeFile = DATA_DIR / (beta_mode ? "BETA_employees.txt" : "employees.txt");
+	std::filesystem::path employeeFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_employees.txt" : "employees.txt");
 	
 	std::ifstream file(employeeFile);
 	if (!file.is_open())
@@ -25,7 +25,8 @@ void loadEmployees(std::vector<employee>& employees)
 			continue;
 
 		// Skip over file header
-		if (line.starts_with("NAME|"))
+		if (line.rfind("NAME|", 0) == 0)
+			continue;
 
 		// Count pipes to ensure correct format (6 pipes = 9 fields)
 		if (count(line.begin(), line.end(), '|') != 6)
@@ -74,7 +75,7 @@ void loadEmployees(std::vector<employee>& employees)
 }
 void saveEmployees(const std::vector<employee>& employees)
 {
-	std::filesystem::path employeeFile = DATA_DIR / (beta_mode ? "BETA_employees.txt" : "employees.txt");
+	std::filesystem::path employeeFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_employees.txt" : "employees.txt");
 
 	std::ofstream file(employeeFile);
 	// Write header first
@@ -95,7 +96,7 @@ void saveEmployees(const std::vector<employee>& employees)
 // Punch file management
 void savePunch(const punch& p)
 {
-	std::filesystem::path punchFile = DATA_DIR / (beta_mode ? "BETA_punchRecords.txt" : "punchRecords.txt");
+	std::filesystem::path punchFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_punchRecords.txt" : "punchRecords.txt");
 
 	std::ofstream file(punchFile, std::ios::app);
 	file << p.employeeID << "--" << p.name << "--" << p.type << "--" << p.timestamp;
@@ -111,7 +112,7 @@ void savePunch(const punch& p)
 
 punch getLastPunch(int employeeID)
 {
-	std::filesystem::path punchFile = DATA_DIR / (beta_mode ? "BETA_punchRecords.txt" : "punchRecords.txt");
+	std::filesystem::path punchFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_punchRecords.txt" : "punchRecords.txt");
 
 	std::ifstream file(punchFile);
 	std::string line;

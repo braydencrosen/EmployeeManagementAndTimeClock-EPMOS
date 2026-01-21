@@ -10,49 +10,106 @@
 #include <thread>
 #include <vector>
 #define NOMINMAX
+
+// Only include for windows sytems
+#ifdef _WIN32
 #include "Windows.h"
+#endif
+
+// Only include for apple systems
+#ifdef __APPLE__
+#include <termios.h>
+#include <unistd.h>
+#endif
+
 #include <iomanip>
 #include <fstream>
 #pragma warning(disable : 4996)
 
 // Windows
-void disableEcho()
-{
-	if (maskInput)
-	{
-		HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
-		DWORD mode;
-		GetConsoleMode(h, &mode);
-		SetConsoleMode(h, mode & ~ENABLE_ECHO_INPUT);
-	}
-}
-void enableEcho()
-{
-	HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
-	DWORD mode;
-	GetConsoleMode(h, &mode);
-	SetConsoleMode(h, mode | ENABLE_ECHO_INPUT);
-}
+#include "Utils.h"
+#include "FileIO.h"
+#include "Config.h"
+#include "Admin.h"
+#include "Notifications.h"
+#include "GlobalFunctions.h"
+#include <iostream>
+#include <ctime>
+#include <chrono>
+#include <thread>
+#include <vector>
+#include <iomanip>
+#include <fstream>
+#include <sstream>
+#include <limits>
 
-// Session util functions
-std::string getTime()
-{
-	time_t now = time(0);
-	tm* ltm = localtime(&now);
+#define NOMINMAX
 
-	char buffer[40];
-	strftime(buffer, sizeof(buffer), "%D %H:%M:%S", ltm);
+// Platform specific includes
+#ifdef _WIN32
+#include <Windows.h>
+#else // macOS/Linux
+#include <termios.h>
+#include <unistd.h>
+#endif
 
-	return std::string(buffer);
-}
-void clear()
-{
-#if defined(_WIN32) || defined(_WIN64)
-	system("CLS"); // Windows
+#pragma warning(disable : 4996)
+
+// Cross platform terminal echo handling
+void disableEcho() {
+#ifdef _WIN32
+    if (maskInput) {
+        HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD mode;
+        GetConsoleMode(h, &mode);
+        SetConsoleMode(h, mode & ~ENABLE_ECHO_INPUT);
+    }
 #else
-	system("clear"); // Linux/macOS
+    if (maskInput) {
+        struct termios tty;
+        tcgetattr(STDIN_FILENO, &tty);
+        tty.c_lflag &= ~ECHO;
+        tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+    }
 #endif
 }
+
+void enableEcho() {
+#ifdef _WIN32
+    HANDLE h = GetStdHandle(STD_INPUT_HANDLE);
+    DWORD mode;
+    GetConsoleMode(h, &mode);
+    SetConsoleMode(h, mode | ENABLE_ECHO_INPUT);
+#else
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    tty.c_lflag |= ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+#endif
+}
+
+// Cross platform terminal clearing
+void clear() {
+#if defined(_WIN32) || defined(_WIN64)
+    system("CLS"); // Windows
+#else
+    system("clear"); // macOS/Linux
+#endif
+}
+
+// Cross platform time handling
+std::string getTime() {
+    time_t now = time(0);
+    tm* ltm = localtime(&now);
+    char buffer[40];
+    strftime(buffer, sizeof(buffer), "%D %H:%M:%S", ltm);
+    return std::string(buffer);
+}
+
+void wait(int sec) {
+    std::this_thread::sleep_for(std::chrono::seconds(sec));
+}
+
 void printHeader(int& employeeidx, std::vector<employee>& employees)
 {
 	std::cout << std::endl;
@@ -83,10 +140,7 @@ void refresh(int& employeeidx, std::vector<employee>& employees)
 	clear();
 	printHeader(employeeidx, employees);
 }
-void wait(int sec)
-{
-	std::this_thread::sleep_for(std::chrono::seconds(sec));
-}
+
 int getChoiceIdx(std::vector<employee>& employees, int& employeeidx)
 {
 	// return -1 cancels, return -2 refreshes and asks again

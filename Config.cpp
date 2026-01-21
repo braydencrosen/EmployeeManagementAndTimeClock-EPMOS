@@ -7,10 +7,11 @@
 #include <filesystem>
 
 // CURRENT VERSION
-const std::string VERSION = "1.0.0";
+const std::string VERSION = "1.0.1";
 
 //================DEFAULT CONFIGURATION================//
 bool defBeta = false;
+bool defUseBetaFiles = true;
 int defAdminAccess = 9;
 std::string defAdminPassword = "admin";
 bool defMaskInput = false;
@@ -22,11 +23,12 @@ bool defBlockAccess = false;
 std::filesystem::path DATA_DIR;
 
 // Configuration variables
-int mgrPin;
 bool beta_mode;
+bool useBetaFiles;
 int admin_access;
 std::string admin_password;
 bool maskInput;
+int mgrPin;
 bool block_access;
 
 
@@ -62,6 +64,16 @@ void configMenu()
 				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 				if (configset == 'y' || configset == '1') { beta_mode = true; configset = '\0'; break; }
 				else if (configset == 'n' || configset == '0') { beta_mode = false; configset = '\0'; break; }
+				else { std::cout << "Unknown\n"; continue; }
+			}
+			// Set beta file mode
+			while (true)
+			{
+				std::cout << "Use beta files (y/n): ";
+				std::cin >> configset;
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				if (configset == 'y' || configset == '1') { useBetaFiles = true; configset = '\0'; break; }
+				else if (configset == 'n' || configset == '0') { useBetaFiles = false; configset = '\0'; break; }
 				else { std::cout << "Unknown\n"; continue; }
 			}
 			// Set admin access
@@ -133,6 +145,10 @@ void configMenu()
 			beta_mode = defBeta;
 			std::cout << "Beta - " << (defBeta ? "TRUE" : "FALSE") << std::endl;
 			wait(1);
+			// Set beta file mode
+			useBetaFiles = defUseBetaFiles;
+			std::cout << "Use beta files - " << (defUseBetaFiles ? "TRUE" : "FALSE") << std::endl;
+			wait(1);
 			// Set admin access
 			admin_access = defAdminAccess;
 			std::cout << "Admin access - " << defAdminAccess << std::endl;
@@ -184,7 +200,9 @@ void saveConfig()
 	if (!file.is_open())
 		return;
 
-	file << "BETA | " << beta_mode << "\n\n";
+	file << "BETA | " << beta_mode << "\n";
+	file << "USE_BETA_FILES | " << useBetaFiles << "\n\n";
+
 	file << "ADMIN_ACCESS | " << admin_access << "\n";
 	file << "ADMIN_CODE | " << admin_password << "\n";
 	file << "MASK_INPUT | " << maskInput << "\n";
@@ -228,6 +246,8 @@ void loadConfig()
 		// Match keys
 		if (key == "BETA")
 			beta_mode = (value == "1");
+		if (key == "USE_BETA_FILES")
+			useBetaFiles = (value == "1");
 		else if (key == "ADMIN_ACCESS")
 			admin_access = std::stoi(value);
 		else if (key == "ADMIN_CODE")

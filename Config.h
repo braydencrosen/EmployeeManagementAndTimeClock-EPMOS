@@ -11,6 +11,7 @@ extern const std::string VERSION;
 
 // Program modes
 extern bool beta_mode;
+extern bool useBetaFiles;
 extern int admin_access;
 extern int mgrPin;
 extern bool block_access;

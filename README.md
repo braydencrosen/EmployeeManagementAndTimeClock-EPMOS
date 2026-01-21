@@ -26,20 +26,19 @@ A terminal-based Employee Management and Time Clock system written in C++. This 
   * Associate, Manager, and Manager (MSTR / master)
   * PIN-based verification for restricted actions
 
-* **Notifications System**
+* **Notifications**
 
   * Send and store notifications between users
   * Persisted notification storage
 
-* **Configuration System**
+* **Configuration**
 
   * Configurable settings loaded/saved from file
   * Beta mode support
   * Feature and access toggles
 
-* **Modular Architecture**
 
-  * Clean separation by responsibility:
+ * **Clean separation by responsibility:**
 
     * `Employees.*` – employee model
     * `FileIO.*` – persistence
@@ -54,7 +53,6 @@ Some features show in the advanced menu that are either partially built, or do n
 
 These features are automatically bypassed, displaying: `This function is temporarily unavailable`
 
-#### WIP:
 * View timecard
 * Edit availability
 * Schedule editor
@@ -94,7 +92,7 @@ Created as needed:
 
 * `punchRecords.txt`
 * `notifications.txt`
-* Optional `BETA_*.txt` versions when beta mode is enabled
+* Optional `BETA_*.txt` versions when beta mode and beta files are enabled (these can be set from the admin menu)
 
 ---
 
@@ -102,20 +100,20 @@ Created as needed:
 
 ### Prerequisites
 
-* C++17 or newer
-* Any C++17-compatible compiler:
+* **C++17** or newer
+* Any **C++17**-compatible compiler:
 
   * **g++ (MinGW / WSL)**
   * **clang++ (macOS/Linux)**
   * **MSVC (Visual Studio – optional, not required)**
 
-**This program was created on ***Windows11*** using Visual Studio 2026 and has not yet been optimized for ***Mac*** or ***Linux**.***
+  **This program has recently been optimized for ***Mac*** and ***Linux***, errors may occur.**
 
 ---
 
 ## Getting Started
 
-* Launch the program
+* Launch the program (a set of employees will automatically be created in a file called "employees.txt")
 * Log in to the test employee (ID: `1111111`)
 * Use the main menu to:
 
@@ -134,12 +132,13 @@ Most actions are menu-driven through terminal prompts.
 The application supports persistent configuration through the `Config.*` system, including:
 
 * `beta_mode` – switches file prefixes to `BETA_*`
+* `useBetaFiles` - Toggles use of seperate **Beta** files for employees, notifications, and punches (Beta mode must also be true)
 * `admin_access` – enables/disables admin tools
 * `mgrPin` – manager verification PIN
 * `block_access` – lock down entire system for testing (admin override still works)
 * `maskInput` – hides sensitive input (like PINs)
 
-Configuration is automatically loaded and saved at runtime.
+Configuration is automatically loaded and saved at runtime and after changes are made
 
 **If no configuration file is found at compilation, you will automatically be redirected to the config menu.**
 
@@ -184,9 +183,9 @@ The Admin Panel provides a powerful command-line interface for advanced control 
 
 ### Accessing the Admin Panel
 
-1. From the **login screen**, enter the admin access code: `9`
+1. From the **login screen**, enter the default admin access code: `9`
 
-2. When prompted, enter the admin password: `admin`
+2. When prompted, enter the default admin password: `admin`
 
 
 > The admin access code and password can be changed from the **Config Menu**.
@@ -195,23 +194,12 @@ The Admin Panel provides a powerful command-line interface for advanced control 
 
 - Switch application modes (e.g., beta mode)
 - Run batch commands
-- Modify configuration values
+- Access configuration menu
 - Access advanced system tools
 
 ### Help Command
 
 To view an organized list of all available admin commands and their descriptions, type: `help`
-
----
-
-## Learning Objectives
-
-This project helped me demonstrate practical use of:
-
-* Object-oriented design in C++
-* Header/source separation
-* File I/O for persistence
-* Menu-driven program design
 
 ---
 

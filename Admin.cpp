@@ -104,9 +104,9 @@ int getSetIdx(std::vector<employee>& employees)
 // Command functions
 void showFiles()
 {
-	std::filesystem::path empFile = DATA_DIR / (beta_mode ? "BETA_employees.txt" : "employees.txt");
-	std::filesystem::path punchFile = DATA_DIR / (beta_mode ? "BETA_punchRecords.txt" : "punchRecords.txt");
-	std::filesystem::path notifFile = DATA_DIR / (beta_mode ? "BETA_notifications.txt" : "notifications.txt");
+	std::filesystem::path empFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_employees.txt" : "employees.txt");
+	std::filesystem::path punchFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_punchRecords.txt" : "punchRecords.txt");
+	std::filesystem::path notifFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_notifications.txt" : "notifications.txt");
 	std::filesystem::path configFile = DATA_DIR / "config.txt";
 
 	std::cout << "\n";

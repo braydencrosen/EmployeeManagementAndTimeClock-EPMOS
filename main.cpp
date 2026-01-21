@@ -12,20 +12,16 @@
 #include <iostream>
 #include <filesystem>
 
-using namespace std;
-
 //MAIN 
 int main()
 {
 	std::filesystem::path DATA_DIR = std::filesystem::path(__FILE__).parent_path() / "Data";
 
-	// Optional: create folder if it doesn't exist
+	// Create folder if it doesn't exist
 	if (!std::filesystem::exists(DATA_DIR))
 	{
 		std::filesystem::create_directory(DATA_DIR);
 	}
-
-	std::cout << "DATA DIR IS : " << DATA_DIR << "\n";
 
 	std::filesystem::path filePath = DATA_DIR / "config.txt";
 
@@ -38,8 +34,8 @@ int main()
 
 
 	// Define variables to store file data between data loads
-	vector<employee> employees;
-	vector<notification> notifications;
+	std::vector<employee> employees;
+	std::vector<notification> notifications;
 	int employeeidx = -1;
 
 	// Load file data to variables
@@ -151,10 +147,10 @@ int main()
 				// Show Last Punch
 				last = getLastPunch(employees[employeeidx].getID());
 				if (last.employeeID == 0)
-					cout << "No punches found\n";
+					std::cout << "No punches found\n";
 				else
-					cout << "\nLast punch: " << last.type
-					<< " at " << last.timestamp << endl;
+					std::cout << "\nLast punch: " << last.type
+					<< " at " << last.timestamp << std::endl;
 				wait(3);
 				break;
 			}

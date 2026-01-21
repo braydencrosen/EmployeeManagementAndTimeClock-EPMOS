@@ -10,7 +10,7 @@
 // Notification file management
 void loadNotifs(std::vector<employee>& employees, std::vector<notification>& notifications)
 {
-	std::filesystem::path notifFile = DATA_DIR / (beta_mode ? "BETA_notifications.txt" : "notifications.txt");
+	std::filesystem::path notifFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_notifications.txt" : "notifications.txt");
 
 	std::ifstream file(notifFile);
 	if (!file.is_open()) return;
@@ -70,7 +70,7 @@ void loadNotifs(std::vector<employee>& employees, std::vector<notification>& not
 
 void saveNotifs(std::vector<employee>& employees, std::vector<notification>& notifications)
 {
-	std::filesystem::path notifFile = DATA_DIR / (beta_mode ? "BETA_notifications.txt" : "notifications.txt");
+	std::filesystem::path notifFile = DATA_DIR / ((beta_mode && useBetaFiles) ? "BETA_notifications.txt" : "notifications.txt");
 
 	std::ofstream file(notifFile);
 	if (!file)
